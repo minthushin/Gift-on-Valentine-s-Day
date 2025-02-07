@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Valentine's Day</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #ffebee;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Floating hearts background */
+        .floating-hearts {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .heart {
+            position: absolute;
+            bottom: -50px;
+            font-size: 24px;
+            color: rgba(214, 51, 108, 0.8);
+            /* a soft pinkish hue */
+            animation: floatHeart linear infinite;
+        }
+
+        @keyframes floatHeart {
+            0% {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(-100vh) scale(1.5);
+                opacity: 0;
+            }
+        }
+
+        .container {
+            background-color: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            width: 500px;
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .image-box {
+            flex: 1;
+            max-width: 50%;
+            padding-right: 10px;
+        }
+
+        .image-box img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 10px;
+        }
+
+        .password-box {
+            flex: 1;
+            text-align: center;
+        }
+
+        .password-input {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .password-input input {
+            width: 80%;
+            padding: 10px 10px 10px 35px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .password-input::before {
+            content: "🔒";
+            position: absolute;
+            left: 10px;
+            font-size: 18px;
+        }
+
+        .keypad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            padding: 0 10px;
+        }
+
+        .keypad button {
+            padding: 12px;
+            font-size: 18px;
+            background-color: #f8bbd0;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            color: #d6336c;
+        }
+
+        .keypad button:hover {
+            background-color: #f48fb1;
+        }
+
+        /* Notification Alert Box */
+        .notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(255, 0, 0, 0.8);
+            color: #fff;
+            padding: 15px 25px;
+            border-radius: 5px;
+            font-size: 16px;
+            z-index: 10000;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        .notification.show {
+            opacity: 1;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Floating hearts container -->
+    <div class="floating-hearts"></div>
+
+    <div id="password-page" class="container">
+        <div class="image-box">
+            <img src="heart.jpg" alt="Valentine's Day Image" />
+        </div>
+        <div class="password-box">
+            <div class="password-input">
+                <input type="password" id="password" placeholder="Enter your password" readonly />
+            </div>
+            <div class="keypad">
+                <button onclick="addNumber('1')">1</button>
+                <button onclick="addNumber('2')">2</button>
+                <button onclick="addNumber('3')">3</button>
+                <button onclick="addNumber('4')">4</button>
+                <button onclick="addNumber('5')">5</button>
+                <button onclick="addNumber('6')">6</button>
+                <button onclick="addNumber('7')">7</button>
+                <button onclick="addNumber('8')">8</button>
+                <button onclick="addNumber('9')">9</button>
+                <button onclick="backspace()">⌫</button>
+                <button onclick="addNumber('0')">0</button>
+                <button onclick="checkPassword()">Enter</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Alert Box -->
+    <div id="notification" class="notification">Incorrect Password. Please try again.</div>
+
+    <script>
+        function addNumber(num) {
+            document.getElementById('password').value += num;
+        }
+
+        function backspace() {
+            let input = document.getElementById('password');
+            input.value = input.value.slice(0, -1);
+        }
+
+        function checkPassword() {
+            let password = document.getElementById('password').value;
+            let correctPassword = "041222";
+            if (password === correctPassword) {
+                window.location.href = "one.html";
+            } else {
+                showNotification("Incorrect Password. Please try again.");
+            }
+        }
+
+        // Function to show the floating notification alert
+        function showNotification(message) {
+            const notification = document.getElementById("notification");
+            notification.innerText = message;
+            notification.classList.add("show");
+            // Remove the notification after 3 seconds
+            setTimeout(() => {
+                notification.classList.remove("show");
+            }, 3000);
+        }
+
+        // Function to create floating hearts in the background
+        function createHearts(numHearts) {
+            const container = document.querySelector('.floating-hearts');
+            for (let i = 0; i < numHearts; i++) {
+                const heart = document.createElement('div');
+                heart.classList.add('heart');
+                heart.innerHTML = '❤️';
+                // Random horizontal position (0% to 100%)
+                heart.style.left = Math.random() * 100 + '%';
+                // Random animation duration between 4s and 8s
+                const duration = Math.random() * 4 + 4;
+                heart.style.animationDuration = duration + 's';
+                // Random animation delay between 0 and 5 seconds
+                const delay = Math.random() * 5;
+                heart.style.animationDelay = delay + 's';
+                // Random font size between 15px and 35px for variety
+                heart.style.fontSize = (Math.random() * 20 + 15) + 'px';
+                container.appendChild(heart);
+            }
+        }
+
+        // Create 20 floating hearts
+        createHearts(20);
+    </script>
+</body>
+
+</html>

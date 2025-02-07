@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Love Timer</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #ffeaf1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Floating hearts background */
+        .floating-hearts {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .heart {
+            position: absolute;
+            bottom: -50px;
+            /* Using a heart emoji; you can also use an image or CSS shape */
+            font-size: 24px;
+            color: rgba(255, 105, 180, 0.8);
+            animation: floatHeart linear infinite;
+        }
+
+        @keyframes floatHeart {
+            0% {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(-100vh) scale(1.5);
+                opacity: 0;
+            }
+        }
+
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 400px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .profile-pic {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            border: 3px dashed #ff6699;
+            overflow: hidden;
+            margin: 0 auto 15px;
+        }
+
+        .profile-pic img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .question {
+            background-color: #ff6699;
+            color: white;
+            padding: 10px;
+            border-radius: 20px;
+            display: inline-block;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .time-box {
+            font-size: 24px;
+            font-weight: bold;
+            color: #d6336c;
+            margin-top: 15px;
+        }
+
+        .time-values {
+            font-size: 26px;
+            color: #ff6699;
+            font-weight: bold;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .time-values div {
+            text-align: center;
+        }
+
+        .time-values span {
+            display: block;
+            font-size: 16px;
+            color: #d6336c;
+        }
+
+        .lock-button {
+            margin-top: 20px;
+            background-color: #ff6699;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 30px;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            width: 220px;
+            margin-left: auto;
+            margin-right: auto;
+            font-weight: bold;
+        }
+
+        .lock-button:hover {
+            background-color: #e6005c;
+        }
+
+        .footer {
+            margin-top: 15px;
+            color: #d6336c;
+            font-size: 18px;
+        }
+
+        .footer span {
+            font-size: 22px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Floating hearts container -->
+    <div class="floating-hearts"></div>
+
+    <div class="container">
+        <div class="profile-pic">
+            <img src="couple.jpg" alt="Couple Picture" />
+        </div>
+        <div class="question">💖 How long have we been together? 💖</div>
+        <div class="time-box" id="years-months">2 YEARS 2 MONTHS</div>
+        <div class="time-values">
+            <div><span id="days">0</span> Days</div>
+            <div><span id="hours">0</span> Hrs</div>
+            <div><span id="minutes">0</span> Mins</div>
+            <div><span id="seconds">0</span> Secs</div>
+        </div>
+        <button class="lock-button" onclick="window.location.href='two.html';">
+            🔒 Thu &amp; Hsu
+        </button>
+        <div class="footer">
+            ❤️ ❤️ ❤️ ❤️ ❤️
+        </div>
+    </div>
+
+    <script>
+        // Timer script
+        function updateTime() {
+            const startDate = new Date(2022, 11, 4); // December 4, 2022 (Months are 0-based)
+            const now = new Date();
+
+            let years = now.getFullYear() - startDate.getFullYear();
+            let months = now.getMonth() - startDate.getMonth();
+            let days = now.getDate() - startDate.getDate();
+
+            if (days < 0) {
+                months -= 1;
+                let lastMonth = new Date(now.getFullYear(), now.getMonth(), 0);
+                days += lastMonth.getDate();
+            }
+
+            if (months < 0) {
+                years -= 1;
+                months += 12;
+            }
+
+            let hours = now.getHours();
+            let minutes = now.getMinutes();
+            let seconds = now.getSeconds();
+
+            document.getElementById("years-months").innerText = `${years} YEARS ${months} MONTHS`;
+            document.getElementById("days").innerText = days;
+            document.getElementById("hours").innerText = hours;
+            document.getElementById("minutes").innerText = minutes;
+            document.getElementById("seconds").innerText = seconds;
+        }
+
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        // Floating hearts creation
+        function createHearts(numHearts) {
+            const container = document.querySelector('.floating-hearts');
+            for (let i = 0; i < numHearts; i++) {
+                const heart = document.createElement('div');
+                heart.classList.add('heart');
+                heart.innerHTML = '❤️'; // Unicode heart
+                // Random horizontal position (0% to 100%)
+                heart.style.left = Math.random() * 100 + '%';
+                // Random animation duration between 4s and 8s
+                const duration = Math.random() * 4 + 4;
+                heart.style.animationDuration = duration + 's';
+                // Random animation delay between 0 and 5 seconds
+                const delay = Math.random() * 5;
+                heart.style.animationDelay = delay + 's';
+                // Random font size between 15px and 35px for variety
+                heart.style.fontSize = (Math.random() * 20 + 15) + 'px';
+                container.appendChild(heart);
+            }
+        }
+
+        // Create 20 hearts
+        createHearts(20);
+    </script>
+</body>
+
+</html>
